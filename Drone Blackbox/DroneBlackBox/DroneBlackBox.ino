@@ -28,12 +28,17 @@ void handleStatusLED() {
 void setup() {
   pinMode(LED_PIN, OUTPUT);
   Serial.begin(115200);
+  delay(1000);
 
-  initSensors();
-  calibrateMPU();
+  pinMode(2, OUTPUT);
+  
+  connectWiFi(); 
+  delay(500);
+  
+  initSensors(); 
   initGPS();
-  connectWiFi();
   initSD();
+  
   initAPI();
 
   Serial.println("System Ready");

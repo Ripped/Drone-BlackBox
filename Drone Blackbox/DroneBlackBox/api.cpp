@@ -10,8 +10,9 @@ int flight_id = -1;
 void getFlightId() {
     if (WiFi.status() == WL_CONNECTED) {
         HTTPClient http;
-        http.begin("http://192.168.1.28:8000/api/session/start?device_id=drone_01");
-        
+        //http.begin("http://192.168.1.28:8000/api/session/start?device_id=drone_01");
+        http.begin("http://192.168.0.15:8000/api/session/start?device_id=drone_01");
+
         int httpResponseCode = http.POST(""); 
         
         if (httpResponseCode == 200) {
@@ -39,7 +40,8 @@ void uploadTaskCode(void * pvParameters) {
         // SLANJE PODATAKA
         if (WiFi.status() == WL_CONNECTED && flight_id != -1) {
             HTTPClient http;
-            String url = "http://192.168.1.28:8000/api/data/" + String(flight_id);
+            //String url = "http://192.168.1.28:8000/api/data/" + String(flight_id);
+            String url = "http://192.168.0.15:8000/api/data/" + String(flight_id);
             http.begin(url);
             http.addHeader("Content-Type", "application/json");
 

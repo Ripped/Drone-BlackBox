@@ -6,16 +6,21 @@
 Adafruit_MPU6050 mpu;
 float ax, ay, az, gx, gy, gz;
 float roll = 0, pitch = 0;
-float off_ax, off_ay, off_az, off_gx, off_gy, off_gz;
+float off_ax = 0, off_ay = 0, off_az = 0, off_gx = 0, off_gy = 0, off_gz = 0;
 
 unsigned long prevTime = 0;
+bool sensorAvailable = false;
 
 void initSensors() {
+    Wire.begin(21, 22); 
+
     if (!mpu.begin()) {
         Serial.println("MPU6050 nije pronadjen!");
-        while (1) delay(10);
+        sensorAvailable = false;
+        return;
     }
     
+    sensorAvailable = true;
     mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
     mpu.setGyroRange(MPU6050_RANGE_500_DEG);
     mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
@@ -25,9 +30,12 @@ void initSensors() {
 }
 
 void calibrateMPU() {
+    if (!sensorAvailable) return;
+
     Serial.println("Kalibracija... NE POMICITE DRON!");
     float sum_ax=0, sum_ay=0, sum_az=0, sum_gx=0, sum_gy=0, sum_gz=0;
-    int samples = 500;
+    int samples = 200;
+    
     for(int i=0; i<samples; i++) {
         sensors_event_t a, g, temp;
         mpu.getEvent(&a, &g, &temp);
@@ -45,6 +53,11 @@ void calibrateMPU() {
 }
 
 void readMPU() {
+    if (!sensorAvailable) {
+        ax = ay = az = gx = gy = gz = roll = pitch = 0;
+        return;
+    }
+
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
 
@@ -57,6 +70,8 @@ void readMPU() {
 
     float dt = (millis() - prevTime) / 1000.0;
     prevTime = millis();
+
+    if (dt <= 0) dt = 0.01; 
 
     float rollAcc = atan2(ay, az) * 57.2958;
     float pitchAcc = atan2(-ax, sqrt(ay*ay + az*az)) * 57.2958;

@@ -25,7 +25,8 @@ void readGPS() {
 
   if (gps.location.isValid()) {
     float currentSpeed = gps.speed.kmph();
-    float hdop = gps.hdop.hdopValue();
+    
+    float hdop = gps.hdop.value() / 100.0; 
     speed = currentSpeed;
 
     if (hdop < 2.0) { 
