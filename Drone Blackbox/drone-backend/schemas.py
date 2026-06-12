@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from typing import Optional
+
 
 class IMUData(BaseModel):
     ax: float
@@ -8,13 +10,15 @@ class IMUData(BaseModel):
     gy: float
     gz: float
 
+
 class GPSData(BaseModel):
-    lat: float
-    lng: float
-    speed: float
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+    speed: Optional[float] = None
+
 
 class FlightDataCreate(BaseModel):
     device_id: str
-    timestamp: int
+    timestamp: Optional[int] = None
     imu: IMUData
     gps: GPSData

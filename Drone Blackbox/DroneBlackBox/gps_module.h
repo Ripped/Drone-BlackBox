@@ -6,5 +6,7 @@ void readGPS();
 
 extern double lat, lng;
 extern float speed;
+extern int satelliteCount;
+extern float hdopValue;
 
 #endif
